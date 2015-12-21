@@ -48,7 +48,7 @@ void gpioInit(void)
 	GPIO_Init(ParkingSwitch, GPIO_MODE_IN_PU_NO_IT);		// RedWire
 	GPIO_Init(ClosedSwitch, GPIO_MODE_IN_PU_NO_IT);			// BlueWire
 	GPIO_Init(PushedSwitch, GPIO_MODE_IN_PU_NO_IT);			// BlackWire
-	GPIO_Init(In4, GPIO_MODE_IN_PU_NO_IT);				// in 4
+	GPIO_Init(In3, GPIO_MODE_IN_PU_NO_IT);				// in 4
 
 	GPIO_Init(OutA_Red, GPIO_MODE_OUT_PP_LOW_FAST);		// out A
 	GPIO_Init(OutB_Black, GPIO_MODE_OUT_PP_LOW_FAST);		// out B
@@ -116,7 +116,7 @@ void motorStop(void)
 }
 
 
-#define WAITING_BEFORE_CLOSING 		(1500)
+#define WAITING_BEFORE_CLOSING 		(200)
 #define CLOSING_TIMEOUT				(1500)
 #define PARKING_TIMEOUT				(1500)
 
@@ -130,6 +130,8 @@ void closing(uint32_t timeNow)
 				return;			// ждем 1.5 сек.
 			motorClosingDir();
 			if ((lockState == LOCK_CLOSED) || (timeNow - startTimestamp > TIMEOUT_1)) {
+				uint32_t timestamp = millis();
+				while(millis() - timestamp < 100);
 				motorStop();
 				motorState = MOTOR_PARKING_AFTER_CLOSING;
 			}
@@ -158,7 +160,7 @@ void closing(uint32_t timeNow)
 	4) Включить двигатель в сторону парковки (закрытия),
 	ждать пока истечет таймаут или сработает концевик парковки
 	*/
-#define WAITING_BEFORE_OPENING	(1000)
+#define WAITING_BEFORE_OPENING	(0)
 #define OPENING_TIMEOUT			(1500)
 #define WAITING_IN_OPEN_STATE 	(1000)
 
@@ -184,7 +186,7 @@ void opening(uint32_t timeNow)
 
 		case MOTOR_PARKING_AFTER_OPENING:
 			motorClosingDir();
-			if ((!GPIO_ReadInputPin(ParkingSwitch)) || (timeNow - startTimestamp > TIMEOUT_4)) {
+			if ((!GPIO_ReadInputPin(ParkingSwitch)) || (timeNow - startTimestamp > TIMEOUT_5)) {
 				motorStop();
 				motorState = MOTOR_PARKED;
 				mode = MODE_WAITING;

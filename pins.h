@@ -5,5 +5,5 @@
 #define Button2		GPIOD, GPIO_PIN_3
 #define ParkingSwitch	GPIOC, GPIO_PIN_3
 #define ClosedSwitch	GPIOC, GPIO_PIN_4
-#define PushedSwitch	GPIOC, GPIO_PIN_5
-#define In4			GPIOB, GPIO_PIN_4
+#define In3				GPIOC, GPIO_PIN_5
+#define PushedSwitch	GPIOB, GPIO_PIN_4
